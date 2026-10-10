@@ -1,0 +1,1075 @@
+/* projects.css — Dedicated GitHub Projects Showcase & GSAP Horizontal Scroll */
+
+.projects-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--paper, #e9e5dc);
+  color: var(--ink, #252822);
+  font-family: var(--font, "Manrope Variable", Arial, sans-serif);
+  overflow-x: hidden;
+}
+
+/* =========================================================================
+   Fixed Chrome Navigation & Category Filter
+   ========================================================================= */
+.projects-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  background: rgba(233, 229, 220, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line, rgba(37, 40, 34, 0.16));
+}
+
+.projects-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px clamp(16px, 3.5vw, 44px);
+  border-bottom: 1px solid var(--line, rgba(37, 40, 34, 0.1));
+}
+
+.projects-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.22));
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: var(--ink, #252822);
+  text-decoration: none;
+}
+
+.projects-back-link:hover {
+  background: var(--ink, #252822);
+  color: var(--paper, #e9e5dc);
+}
+
+.projects-header-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.projects-counter-badge {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #626457);
+}
+
+.projects-counter-badge span {
+  color: var(--accent, #b8432d);
+  font-weight: 700;
+}
+
+.projects-counter-badge strong {
+  color: var(--ink, #252822);
+}
+
+.projects-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-toggle-btn {
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 7px 12px;
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.22));
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink, #252822);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.view-toggle-btn:hover {
+  background: rgba(37, 40, 34, 0.08);
+}
+
+.projects-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 7px 14px;
+  border: 1px solid var(--ink, #252822);
+  border-radius: 4px;
+  background: var(--ink, #252822);
+  color: var(--paper, #e9e5dc);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.projects-github-link:hover {
+  opacity: 0.88;
+}
+
+/* Category Filter Bar */
+.projects-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px clamp(16px, 3.5vw, 44px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.projects-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-chip {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.22));
+  background: transparent;
+  color: var(--muted, #626457);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-chip:hover {
+  color: var(--ink, #252822);
+  border-color: var(--ink, #252822);
+}
+
+.filter-chip[aria-pressed="true"] {
+  background: var(--ink, #252822);
+  color: var(--paper, #e9e5dc);
+  border-color: var(--ink, #252822);
+}
+
+.projects-nav-arrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-stepper-count {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  color: var(--muted, #626457);
+  white-space: nowrap;
+}
+
+.nav-arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.22));
+  border-radius: 4px;
+  font-size: 13px;
+  background: transparent;
+  color: var(--ink, #252822);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-arrow-btn:hover:not(:disabled) {
+  background: var(--ink, #252822);
+  color: var(--paper, #e9e5dc);
+}
+
+.nav-arrow-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Hairline Progress Bar */
+.projects-scroll-progress {
+  height: 3px;
+  background: rgba(37, 40, 34, 0.08);
+  width: 100%;
+}
+
+.projects-scroll-progress-fill {
+  height: 100%;
+  background: var(--accent, #b8432d);
+  transition: width 0.05s linear;
+}
+
+/* =========================================================================
+   GSAP Horizontal Viewport & Track
+   ========================================================================= */
+.projects-viewport {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding-top: 105px;
+  padding-bottom: 18px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.projects-horizontal-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  height: 100%;
+  padding: 0 clamp(20px, 3.5vw, 48px);
+  gap: clamp(24px, 3vw, 48px);
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+   Project Study Panel (Adopting Campus Gatepass Layout & Palette)
+   ========================================================================= */
+.project-study-panel {
+  position: relative;
+  width: clamp(380px, 86vw, 1260px);
+  height: 100%;
+  max-height: calc(100vh - 128px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: var(--card-paper, #bdc4aa);
+  color: var(--card-ink, #242c20);
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.18));
+  border-radius: 6px;
+  padding: clamp(16px, 2.2vw, 28px) clamp(20px, 2.8vw, 40px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* Panel Topline */
+.panel-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 10px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+}
+
+.panel-cat-badge {
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+/* Panel Heading: Two-line editorial title + Square open button */
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 12px;
+  gap: 16px;
+}
+
+.panel-title {
+  font-size: clamp(32px, 4.2vw, 68px);
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  font-weight: 450;
+  margin: 0;
+}
+
+.panel-title em {
+  color: var(--card-accent, #435939);
+  font-style: italic;
+  font-weight: 350;
+}
+
+.panel-open-btn {
+  width: 52px;
+  height: 52px;
+  border: 1px solid currentColor;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  background: transparent;
+  color: currentColor;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.panel-open-btn:hover {
+  background: var(--card-ink, #242c20);
+  color: var(--card-paper, #bdc4aa);
+  transform: translate(2px, -2px);
+}
+
+/* Panel Schematic Area */
+.panel-schematic {
+  flex: 1;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 6px 0 10px;
+  overflow: hidden;
+}
+
+.panel-schematic .study-visual.project-field {
+  height: 100%;
+  min-height: 230px;
+  padding: clamp(14px, 1.8vw, 24px);
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
+
+/* Panel Bottom: Description, Tools & Action Links */
+.panel-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  border-top: 1px solid currentColor;
+  padding-top: 12px;
+}
+
+.panel-desc {
+  max-width: 56ch;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.55;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.panel-footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.panel-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.panel-ext-pill {
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: currentColor;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.panel-ext-pill:hover {
+  background: var(--card-ink, #242c20);
+  color: var(--card-paper, #bdc4aa);
+}
+
+.panel-ext-pill--live {
+  background: var(--card-accent, #435939);
+  color: var(--card-paper, #bdc4aa);
+  border-color: var(--card-accent, #435939);
+}
+
+.panel-ext-pill--live:hover {
+  opacity: 0.88;
+}
+
+/* =========================================================================
+   Grid View Layout (Full Page Editorial Studies)
+   ========================================================================= */
+.projects-grid-container {
+  padding: 130px clamp(20px, 5vw, 64px) 80px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 84px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.project-study-panel--grid {
+  width: 100%;
+  max-height: none;
+  min-height: 600px;
+  padding: clamp(28px, 3.5vw, 48px);
+}
+
+.project-study-panel--grid .panel-title {
+  font-size: clamp(48px, 6.5vw, 110px);
+}
+
+.project-study-panel--grid .panel-schematic {
+  min-height: 440px;
+}
+
+/* =========================================================================
+   Interactive Schematic Field Internals
+   ========================================================================= */
+.study-visual.project-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font, "Manrope Variable", Arial, sans-serif);
+}
+
+.project-field-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 6px;
+  opacity: 0.85;
+}
+
+.project-field-controls button {
+  background: transparent;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: inherit;
+  transition: opacity 0.2s;
+  opacity: 0.6;
+}
+
+.project-field-controls button:hover,
+.project-field-controls button[aria-pressed="true"] {
+  opacity: 1;
+}
+
+.project-field-controls button[aria-pressed="true"] {
+  font-weight: 700;
+}
+
+.project-field-kicker {
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+  margin: 0;
+}
+
+.project-field-context {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.9;
+  margin: 6px 0;
+}
+
+.project-field-foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  border-top: 1px solid currentColor;
+  padding-top: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.project-field-foot p {
+  margin: 0;
+}
+
+/* KSAC Gatepass Pro Field */
+.ksac-status-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  margin: 6px 0;
+}
+
+.ksac-code-display {
+  font-size: clamp(34px, 5.5vw, 76px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  margin: 2px 0;
+}
+
+.ksac-state-selector {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  padding: 4px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ksac-state-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+/* AI Review Field */
+.ai-pipeline-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.ai-module-title {
+  font-size: clamp(26px, 4.5vw, 60px);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.ai-telemetry-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+/* Gesture-MIDI Field */
+.gesture-stage-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.gesture-trigger-display {
+  font-size: clamp(26px, 4.5vw, 56px);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.gesture-keys-visual {
+  display: flex;
+  gap: 4px;
+}
+
+.virtual-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid currentColor;
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.virtual-key:hover,
+.virtual-key--active {
+  background: var(--card-accent, #5fa8d3);
+  color: var(--card-paper, #2c3b4a);
+  transform: translateY(3px);
+}
+
+/* KLICK Field */
+.klick-acoustic-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.klick-sound-text {
+  font-size: clamp(24px, 4.2vw, 52px);
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.klick-interactive-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.klick-tap-btn {
+  padding: 6px 14px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.klick-tap-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.klick-features-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.klick-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 10px;
+}
+
+/* Online Kafe Field */
+.kafe-display-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.kafe-layer-title {
+  font-size: clamp(28px, 4.5vw, 64px);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Korridor Field */
+.hostel-composition {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 6px 0;
+}
+
+.hostel-index {
+  font-size: clamp(40px, 6vw, 84px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  margin: 0;
+}
+
+.hostel-letter {
+  display: flex;
+  gap: 6px;
+}
+
+.hostel-plane {
+  font-size: clamp(40px, 6vw, 84px);
+  font-weight: 700;
+  line-height: 0.9;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.hostel-plane[data-selected="true"] {
+  opacity: 1;
+}
+
+/* Smory Field */
+.smory-capsule-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.smory-capsule-heading {
+  font-size: clamp(26px, 4.2vw, 56px);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+/* Expense Tracker Field */
+.expense-meter-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.expense-total-display {
+  font-size: clamp(34px, 5.5vw, 76px);
+  font-weight: 750;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  margin: 0;
+}
+
+.expense-progress-bar {
+  width: 80%;
+  max-width: 400px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.expense-progress-fill {
+  height: 100%;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+
+/* Data Analysis Field */
+.data-stats-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.data-metric-text {
+  font-size: clamp(28px, 4.5vw, 64px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.data-chart-preview {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 36px;
+}
+
+.data-bar {
+  width: 14px;
+  background: currentColor;
+  border-radius: 2px 2px 0 0;
+  opacity: 0.75;
+}
+
+/* Shared Gatepass Targets & Route */
+.gatepass-targets {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4px;
+  font-size: 12px;
+}
+
+.gatepass-route {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid currentColor;
+  padding-top: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.gatepass-route button {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: clamp(12px, 1.3vw, 16px);
+  line-height: 1.2;
+}
+
+/* =========================================================================
+   DETAIL DIALOG MODAL (Matches ProjectDetail from portfolio)
+   ========================================================================= */
+.projects-detail-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(92vw, 980px);
+  max-height: 90vh;
+  padding: 0;
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.25));
+  border-radius: 6px;
+  background: var(--paper, #e9e5dc);
+  color: var(--ink, #252822);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.projects-detail-dialog::backdrop {
+  background: rgba(20, 22, 18, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: var(--paper, #e9e5dc);
+  border-bottom: 1px solid var(--line, rgba(37, 40, 34, 0.16));
+  z-index: 10;
+}
+
+.modal-body {
+  padding: clamp(24px, 3.5vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modal-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-title {
+  font-size: clamp(28px, 3.8vw, 48px);
+  font-weight: 550;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.modal-lead {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted, #626457);
+  margin: 0;
+}
+
+.modal-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 18px;
+  background: rgba(37, 40, 34, 0.04);
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.14));
+  border-radius: 4px;
+}
+
+.modal-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted, #626457);
+}
+
+.metric-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink, #252822);
+}
+
+.modal-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 6px;
+}
+
+.modal-pillar h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  color: var(--ink, #252822);
+}
+
+.modal-pillar p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted, #626457);
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line, rgba(37, 40, 34, 0.16));
+}
+
+.project-tools-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tool-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  background: rgba(37, 40, 34, 0.06);
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.18));
+  border-radius: 3px;
+}
+
+.modal-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-ext-btn {
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 18px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.modal-ext-btn--primary {
+  background: var(--ink, #252822);
+  color: var(--paper, #e9e5dc);
+  border: 1px solid var(--ink, #252822);
+}
+
+.modal-ext-btn--primary:hover {
+  background: var(--accent, #b8432d);
+  border-color: var(--accent, #b8432d);
+}
+
+.modal-ext-btn--secondary {
+  border: 1px solid var(--line, rgba(37, 40, 34, 0.3));
+  color: var(--ink, #252822);
+}
+
+.modal-ext-btn--secondary:hover {
+  background: rgba(37, 40, 34, 0.08);
+}
+
+/* =========================================================================
+   Mobile and Responsive Adjustments
+   ========================================================================= */
+@media (max-width: 768px) {
+  .projects-header-center {
+    display: none;
+  }
+  .panel-heading {
+    margin: 8px 0;
+  }
+  .panel-open-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+  .project-study-panel {
+    width: 92vw;
+    padding: 14px 16px;
+  }
+  .panel-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .panel-footer-actions {
+    align-items: flex-start;
+  }
+}

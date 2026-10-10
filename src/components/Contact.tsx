@@ -75,6 +75,7 @@ export default function Contact() {
                 onBlur={reset}
                 className="contact-primary"
                 href={`mailto:${identity.email}`}
+                aria-label={`Send email to ${identity.email}`}
               >
                 {identity.email}
                 <span aria-hidden="true">↗</span>
@@ -93,6 +94,63 @@ export default function Contact() {
                 Take the link with you<span aria-hidden="true">↗</span>
               </button>
             )}
+            <nav
+              className="contact-socials"
+              aria-label="Social and professional links"
+            >
+              {identity.instagram && (
+                <a
+                  href={identity.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-social-link"
+                  data-cursor="INSTAGRAM"
+                  aria-label={
+                    identity.instagramHandle
+                      ? `Instagram profile ${identity.instagramHandle}`
+                      : "Instagram profile"
+                  }
+                >
+                  <span className="contact-social-main">
+                    <span className="contact-social-label">Instagram</span>
+                    {identity.instagramHandle && (
+                      <span className="contact-social-handle">
+                        {identity.instagramHandle}
+                      </span>
+                    )}
+                  </span>
+                  <span aria-hidden="true" className="contact-social-arrow">
+                    ↗
+                  </span>
+                </a>
+              )}
+              {identity.linkedin && (
+                <a
+                  href={identity.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-social-link"
+                  data-cursor="LINKEDIN"
+                  aria-label={
+                    identity.linkedinHandle
+                      ? `LinkedIn profile ${identity.linkedinHandle}`
+                      : "LinkedIn profile"
+                  }
+                >
+                  <span className="contact-social-main">
+                    <span className="contact-social-label">LinkedIn</span>
+                    {identity.linkedinHandle && (
+                      <span className="contact-social-handle">
+                        {identity.linkedinHandle}
+                      </span>
+                    )}
+                  </span>
+                  <span aria-hidden="true" className="contact-social-arrow">
+                    ↗
+                  </span>
+                </a>
+              )}
+            </nav>
             <span className="copy-status" role="status">
               {status}
             </span>
@@ -110,11 +168,20 @@ export default function Contact() {
         <footer className="footer">
           <span>Sujal Agarwal / {new Date().getFullYear()}</span>
           <div>
+            {identity.email && (
+              <a
+                href={`mailto:${identity.email}`}
+                aria-label={`Email ${identity.email}`}
+              >
+                Email ↗
+              </a>
+            )}
             {identity.github && (
               <a
                 href={identity.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub profile"
               >
                 GitHub ↗
               </a>
@@ -124,8 +191,27 @@ export default function Contact() {
                 href={identity.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={
+                  identity.linkedinHandle
+                    ? `LinkedIn profile ${identity.linkedinHandle}`
+                    : "LinkedIn profile"
+                }
               >
                 LinkedIn ↗
+              </a>
+            )}
+            {identity.instagram && (
+              <a
+                href={identity.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={
+                  identity.instagramHandle
+                    ? `Instagram profile ${identity.instagramHandle}`
+                    : "Instagram profile"
+                }
+              >
+                Instagram ↗
               </a>
             )}
             <a href="#top">

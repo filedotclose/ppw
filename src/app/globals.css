@@ -1272,6 +1272,55 @@ html[data-detail="open"] .optical-fallback {
 .contact-primary > span {
   font-size: 35px;
 }
+.contact-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+.contact-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e9e5dc30;
+  color: var(--paper);
+  text-decoration: none;
+  font-size: clamp(13px, 1.1vw, 16px);
+  transition: border-color 0.25s, opacity 0.25s;
+}
+.contact-social-link:hover,
+.contact-social-link:focus-visible {
+  border-bottom-color: #e9e5dc90;
+}
+.contact-social-main {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.contact-social-label {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.contact-social-handle {
+  font-size: 0.88em;
+  color: #bdc4aa;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+}
+.contact-social-arrow {
+  font-size: 1.1em;
+  opacity: 0.75;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.contact-social-link:hover .contact-social-arrow,
+.contact-social-link:focus-visible .contact-social-arrow {
+  transform: translate(2px, -2px);
+  opacity: 1;
+}
 .copy-status {
   display: block;
   font-size: 11px;
@@ -1939,7 +1988,7 @@ html[data-scene="contact"] .optical-fallback {
     margin-left: 0;
   }
   .contact-action {
-    margin: 80px 0 0 18%;
+    margin: 70px 0 0 10%;
   }
   .contact-primary {
     font-size: 16px;
@@ -1948,11 +1997,20 @@ html[data-scene="contact"] .optical-fallback {
   .contact-primary > span {
     font-size: 26px;
   }
+  .contact-socials {
+    margin-top: 16px;
+    gap: 6px;
+  }
+  .contact-social-link {
+    padding: 9px 0;
+    font-size: 12px;
+  }
   .footer {
     gap: 15px;
     align-items: baseline;
     font-size: 8px;
     line-height: 1.7;
+    flex-wrap: wrap;
   }
   .footer > div {
     gap: 15px;
@@ -2053,13 +2111,31 @@ html[data-scene="profile"] [data-optical-lens] {
     margin-left: 0;
   }
   .contact-primary[href^="mailto:"] {
-    font-size: clamp(12px, 3.8vw, 16px);
+    font-size: clamp(10.5px, 3.4vw, 15px);
+    word-break: break-all;
   }
   .menu-link {
     font-size: 8.5vw;
   }
   .menu-inner {
     padding-top: 9vh;
+  }
+}
+@media (max-width: 360px) {
+  .contact-action {
+    margin: 50px 0 0 0;
+  }
+  .contact-primary[href^="mailto:"] {
+    font-size: 11px;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .footer > div {
+    justify-content: flex-start;
+    gap: 12px;
   }
 }
 @media (pointer: coarse) {
@@ -2088,4 +2164,164 @@ html[data-scene="profile"] [data-optical-lens] {
   .cursor {
     display: none;
   }
+  .scroll-progress-bar {
+    display: none;
+  }
 }
+
+/* GPU Compositing Performance Optimizations */
+.hero-word--first,
+.hero-word--second,
+.hero-caption,
+.hero-foot,
+.hero-reveal,
+.intro-line,
+.study-visual,
+.study-title,
+.bridge-before span,
+.bridge-after,
+.bridge-after span,
+.contact-reveal,
+.contact-title,
+.cursor {
+  will-change: transform;
+}
+
+/* Smooth Scroll Progress Bar */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  z-index: 100;
+  pointer-events: none;
+  transform-origin: 0% 50%;
+  transform: scaleX(var(--scroll-progress, 0));
+  will-change: transform;
+}
+
+html[data-scene="optics"] .scroll-progress-bar,
+html[data-scene="structure"] .scroll-progress-bar,
+html[data-scene="contact"] .scroll-progress-bar {
+  background: var(--paper);
+}
+
+html[data-scene="signal"] .scroll-progress-bar {
+  background: #fff5e7;
+}
+
+html[data-menu="open"] .scroll-progress-bar,
+html[data-detail="open"] .scroll-progress-bar {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Smooth Scroll Back-To-Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: var(--gutter);
+  z-index: 25;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 15px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.3s,
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+  cursor: pointer;
+}
+
+html[data-scrolled="true"] .back-to-top,
+.back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.back-to-top:hover .back-to-top-arrow {
+  transform: translateY(-2px);
+}
+
+.back-to-top-arrow {
+  font-size: 14px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+html[data-scene="optics"] .back-to-top,
+html[data-scene="structure"] .back-to-top,
+html[data-scene="contact"] .back-to-top {
+  background: #252822;
+  color: var(--paper);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html[data-scene="optics"] .back-to-top:hover,
+html[data-scene="structure"] .back-to-top:hover,
+html[data-scene="contact"] .back-to-top:hover {
+  background: var(--paper);
+  color: #252822;
+  border-color: var(--paper);
+}
+
+html[data-scene="signal"] .back-to-top {
+  background: #b8432d;
+  color: #fff5e7;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+html[data-scene="signal"] .back-to-top:hover {
+  background: #fff5e7;
+  color: #b8432d;
+  border-color: #fff5e7;
+}
+
+html[data-menu="open"] .back-to-top,
+html[data-detail="open"] .back-to-top {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .back-to-top {
+    bottom: 20px;
+    right: 16px;
+    padding: 7px 12px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar,
+  .back-to-top {
+    transition: none !important;
+  }
+}
+

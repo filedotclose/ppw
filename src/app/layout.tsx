@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Sujal Agarwal — Full-stack, AI & automation",
   description:
     "Sujal Agarwal’s portfolio: full-stack campus products, AI workflow automation, Government of Sikkim experience, and computer science at KIIT.",
+  authors: [{ name: identity.name, url: `mailto:${identity.email}` }],
+  creator: identity.name,
   openGraph: {
     title: "Sujal Agarwal",
     description:

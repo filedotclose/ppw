@@ -2,9 +2,12 @@
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 
+import Link from "next/link";
+
 const links = [
   ["Beginning", "#top"],
   ["Selected work", "#work"],
+  ["GitHub Projects Showcase", "/projects"],
   ["Profile & experience", "#profile"],
   ["Under the surface", "#inside"],
   ["Contact", "#contact"],
@@ -26,16 +29,25 @@ export default function Navigation() {
       );
       setOpen(false);
       if (href) {
+        if (href.startsWith("/")) {
+          window.location.href = href;
+          return;
+        }
         const target = document.querySelector<HTMLElement>(href);
-        if (target)
+        if (target) {
+          const offset = href === "#top" ? 0 : 80;
           document.dispatchEvent(
             new CustomEvent("portfolio:scroll", {
               detail: {
-                top: target.getBoundingClientRect().top + window.scrollY,
+                top: Math.max(
+                  0,
+                  target.getBoundingClientRect().top + window.scrollY - offset,
+                ),
                 immediate: false,
               },
             }),
           );
+        }
         target?.focus({ preventScroll: true });
         history.replaceState(null, "", href);
       } else opener.current?.focus();
@@ -102,8 +114,11 @@ export default function Navigation() {
           Independent portfolio
         </span>
         <div className="nav-actions">
+          <Link href="/projects" className="nav-work">
+            GitHub Projects <span aria-hidden="true">↗</span>
+          </Link>
           <a href="#work" className="nav-work">
-            Explore the work <span aria-hidden="true">↗</span>
+            Explore the work <span aria-hidden="true">↓</span>
           </a>
           <button
             ref={opener}

@@ -8,7 +8,7 @@ import Lenis from "lenis";
 export default function MotionSystem() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
     const media = gsap.matchMedia();
     let lenis: Lenis | undefined;
     let tick: ((time: number) => void) | undefined;
@@ -28,9 +28,34 @@ export default function MotionSystem() {
         typeof request === "number"
           ? { top: request, immediate: true }
           : request;
-      if (lenis) lenis.scrollTo(top, { immediate, force: true });
-      else window.scrollTo({ top, behavior: "instant" });
+      if (lenis) lenis.scrollTo(top, { immediate: !!immediate, force: true });
+      else window.scrollTo({ top, behavior: immediate ? "instant" : "smooth" });
     };
+    const updateProgress = (scroll: number, limit?: number) => {
+      const scrollLimit = Math.max(
+        1,
+        limit || document.documentElement.scrollHeight - window.innerHeight,
+      );
+      const progress = Math.min(1, Math.max(0, scroll / scrollLimit));
+      document.documentElement.style.setProperty(
+        "--scroll-pct",
+        `${(progress * 100).toFixed(2)}%`,
+      );
+      document.documentElement.style.setProperty(
+        "--scroll-progress",
+        progress.toFixed(4),
+      );
+      if (scroll > 400) {
+        document.documentElement.dataset.scrolled = "true";
+      } else {
+        delete document.documentElement.dataset.scrolled;
+      }
+    };
+    updateProgress(window.scrollY);
+    const onNativeScroll = () => {
+      if (!lenis) updateProgress(window.scrollY);
+    };
+    window.addEventListener("scroll", onNativeScroll, { passive: true });
     document.addEventListener("portfolio:scroll", navigate);
     document.addEventListener("portfolio:overlay", overlay);
     document.addEventListener("visibilitychange", visibility);
@@ -41,11 +66,53 @@ export default function MotionSystem() {
         duration: 1.2,
         easing: (progress) => Math.min(1, 1.001 - Math.pow(2, -10 * progress)),
         smoothWheel: true,
-        anchors: { offset: -24 },
+        wheelMultiplier: 1,
+        touchMultiplier: 1.5,
         syncTouch: false,
         autoRaf: false,
       });
-      lenis.on("scroll", ScrollTrigger.update);
+      lenis.on(
+        "scroll",
+        (e: { scroll: number; limit: number }) => {
+          ScrollTrigger.update();
+          updateProgress(e.scroll, e.limit);
+        },
+      );
+      const handleAnchorClick = (event: MouseEvent) => {
+        const link = (event.target as HTMLElement).closest<HTMLAnchorElement>(
+          "a[href*='#']",
+        );
+        if (!link) return;
+        const href = link.getAttribute("href");
+        if (!href || !href.startsWith("#") || href === "#") return;
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)
+          return;
+
+        const targetId = href.slice(1);
+        const target =
+          document.getElementById(targetId) ||
+          document.querySelector<HTMLElement>(href);
+        if (!target) return;
+
+        event.preventDefault();
+
+        const offset = targetId === "top" ? 0 : -80;
+        if (lenis) {
+          lenis.scrollTo(target, {
+            offset,
+            duration: 1.2,
+            immediate: false,
+            force: true,
+          });
+        } else {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+        history.pushState(null, "", href);
+        target.focus({ preventScroll: true });
+      };
+      document.addEventListener("click", handleAnchorClick);
+      const onResize = () => lenis?.resize();
+      window.addEventListener("resize", onResize);
       tick = (time: number) => lenis?.raf(time * 1000);
       gsap.ticker.add(tick);
       const entrance = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -195,6 +262,8 @@ export default function MotionSystem() {
           );
       }
       return () => {
+        document.removeEventListener("click", handleAnchorClick);
+        window.removeEventListener("resize", onResize);
         if (tick) gsap.ticker.remove(tick);
         lenis?.destroy();
         lenis = undefined;
@@ -227,10 +296,12 @@ export default function MotionSystem() {
       media.revert();
       gsap.ticker.lagSmoothing(500, 33);
       observer.disconnect();
+      window.removeEventListener("scroll", onNativeScroll);
       document.removeEventListener("portfolio:scroll", navigate);
       document.removeEventListener("portfolio:overlay", overlay);
       document.removeEventListener("visibilitychange", visibility);
       delete document.documentElement.dataset.scene;
+      delete document.documentElement.dataset.scrolled;
     };
   }, []);
   return null;

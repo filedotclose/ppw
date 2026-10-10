@@ -197,8 +197,8 @@ function drawTypography(
 ): string {
   const canvas = texture.image as HTMLCanvasElement;
   const resolution = Math.min(
-    mobile ? 1 : 1.5,
-    (mobile ? 1024 : 2048) / Math.max(width, height),
+    mobile ? 0.85 : 1.0,
+    (mobile ? 1024 : 1536) / Math.max(width, height),
   );
   const textureWidth = Math.max(1, Math.round(width * resolution));
   const textureHeight = Math.max(1, Math.round(height * resolution));
@@ -215,6 +215,15 @@ function drawTypography(
       styles.set(element, style);
     }
     return style;
+  };
+  const boundsMap = new Map<HTMLElement, DOMRect>();
+  const boundsOf = (element: HTMLElement) => {
+    let b = boundsMap.get(element);
+    if (!b) {
+      b = element.getBoundingClientRect();
+      boundsMap.set(element, b);
+    }
+    return b;
   };
   const field = section?.querySelector<HTMLElement>(
     ".study-visual, .hero-stage, .contact-reveal",
@@ -266,7 +275,7 @@ function drawTypography(
           opacity *= Number(ancestorStyle.opacity);
           const inset = ancestorStyle.clipPath.match(/^inset\(([^)]+)\)$/);
           if (inset) {
-            const bounds = ancestor.getBoundingClientRect();
+            const bounds = boundsOf(ancestor);
             const values = inset[1].trim().split(/\s+/);
             const sides = [
               values[0],
@@ -298,7 +307,7 @@ function drawTypography(
               ancestorStyle.overflowX + ancestorStyle.overflowY,
             )
           ) {
-            const bounds = ancestor.getBoundingClientRect();
+            const bounds = boundsOf(ancestor);
             if (/hidden|clip|scroll|auto/.test(ancestorStyle.overflowX)) {
               clip.left = Math.max(clip.left, bounds.left);
               clip.right = Math.min(clip.right, bounds.right);
@@ -354,50 +363,45 @@ function drawTypography(
         if (range.getClientRects().length <= 1) {
           addRun(0, text.length);
         } else {
-          // Split a wrapped text node into lines without re-laying it out in canvas.
+          // Split a wrapped text node into lines by words without checking character-by-character
+          const words = text.split(/(\s+)/);
           let start = 0;
           let lineTop: number | undefined;
-          for (let offset = 0; offset < text.length;) {
-            const next =
-              offset + ((text.codePointAt(offset) ?? 0) > 0xffff ? 2 : 1);
-            range.setStart(node, offset);
-            range.setEnd(node, next);
-            const rect = range.getBoundingClientRect();
-            if (lineTop !== undefined && Math.abs(rect.top - lineTop) > 1) {
-              addRun(start, offset);
-              start = offset;
+          let charOffset = 0;
+          for (let i = 0; i < words.length; i++) {
+            const word = words[i];
+            const endOffset = charOffset + word.length;
+            if (word.trim().length > 0) {
+              range.setStart(node, charOffset);
+              range.setEnd(node, endOffset);
+              const rect = range.getBoundingClientRect();
+              if (lineTop !== undefined && Math.abs(rect.top - lineTop) > 2) {
+                addRun(start, charOffset);
+                start = charOffset;
+              }
+              lineTop = rect.top;
             }
-            lineTop = rect.top;
-            offset = next;
+            charOffset = endOffset;
           }
-          addRun(start, text.length);
+          if (start < text.length) {
+            addRun(start, text.length);
+          }
         }
       }
     });
 
   // A dirty event needn't change the sampled text: do not upload identical pixels.
-  const signature = JSON.stringify([
-    sceneName,
-    textureWidth,
-    textureHeight,
-    background,
-    runs.map((run) => [
-      run.text,
-      ...[run.left, run.top, run.width, run.height].map((value) =>
-        Math.round(value * 2),
-      ),
-      run.font,
-      run.tracking,
-      run.color,
-      Math.round(run.opacity * 100),
-      run.clip,
-    ]),
-  ]);
+  let signature = `${sceneName}:${textureWidth}:${textureHeight}:${background}`;
+  for (let i = 0; i < runs.length; i++) {
+    const r = runs[i];
+    signature += `;${r.text}:${Math.round(r.left * 2)}:${Math.round(r.top * 2)}:${Math.round(r.width * 2)}:${Math.round(r.height * 2)}:${Math.round(r.opacity * 100)}:${r.color}`;
+  }
   if (signature === previousSignature) return signature;
-  if (canvas.width !== textureWidth || canvas.height !== textureHeight)
+  if (canvas.width !== textureWidth || canvas.height !== textureHeight) {
     texture.dispose();
-  canvas.width = textureWidth;
-  canvas.height = textureHeight;
+    canvas.width = textureWidth;
+    canvas.height = textureHeight;
+  }
   context.setTransform(
     canvas.width / width,
     0,
@@ -1060,6 +1064,7 @@ export default function OpticalLens() {
         }
       };
 
+      let lastTypographyTime = 0;
       const queueTypographySnapshot = (delay: number) => {
         window.clearTimeout(typographyTimer);
         // One trailing event snapshot catches GSAP scrub/CSS transition settling,
@@ -1082,11 +1087,12 @@ export default function OpticalLens() {
         if (
           target.id === "signal-input" ||
           target.id === "separation" ||
+          target.id === "order-separation" ||
           target.id === "focus"
         ) {
           typographyDirty = true;
           routeDirty = true;
-          queueTypographySnapshot(target.id === "separation" ? 450 : 100);
+          queueTypographySnapshot(target.id.includes("separation") ? 350 : 100);
           requestFrame();
         }
       };
@@ -1103,8 +1109,14 @@ export default function OpticalLens() {
             );
         if (Math.abs(scrollY - previousScrollY) > 0.1) {
           routeDirty = true;
-          typographyDirty = true;
-          queueTypographySnapshot(750);
+          // Smoothly update the typography texture at ~15 FPS max during active scrolling,
+          // so the glass refraction fluidly tracks the page instead of freezing in place,
+          // while avoiding per-frame layout flushes and GPU bus saturation.
+          if (now - lastTypographyTime > 64) {
+            typographyDirty = true;
+            lastTypographyTime = now;
+          }
+          queueTypographySnapshot(150);
         }
         previousScrollY = scrollY;
         previousScrollTime = now;

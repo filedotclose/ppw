@@ -1,6 +1,8 @@
 .profile {
   --profile-mineral: #dce0d6;
   --profile-rule: rgba(37, 40, 34, 0.25);
+  --profile-accent: #98321f;
+  --accent: #98321f;
   background: var(--profile-mineral);
   color: var(--ink, #252822);
   padding: clamp(72px, 8vw, 128px) var(--gutter) clamp(80px, 9vw, 144px);
@@ -31,7 +33,7 @@
 }
 
 .profile-slash {
-  color: var(--accent, #b8432d);
+  color: var(--profile-accent, #98321f);
   font-weight: 400;
 }
 
@@ -99,7 +101,7 @@
 .profile-record-index {
   display: block;
   margin-bottom: 28px;
-  color: var(--accent, #b8432d);
+  color: var(--profile-accent, #98321f);
   font-variant-numeric: tabular-nums;
 }
 
@@ -160,7 +162,7 @@
 
 .profile-impact dd {
   margin: 12px 0;
-  color: var(--accent, #b8432d);
+  color: var(--profile-accent, #98321f);
   font-size: clamp(64px, 8vw, 144px);
   font-weight: 500;
   line-height: 1;
@@ -291,7 +293,7 @@
 
 .profile-skill-group summary:hover,
 .profile-skill-group[open] summary {
-  color: var(--accent, #b8432d);
+  color: var(--profile-accent, #98321f);
 }
 
 .profile-skill-group summary:focus-visible {
@@ -370,7 +372,7 @@
 .profile-rank-number > span {
   display: inline-block;
   margin-left: 0.17em;
-  color: var(--accent, #b8432d);
+  color: var(--profile-accent, #98321f);
   font-weight: 400;
 }
 

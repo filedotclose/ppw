@@ -2,9 +2,12 @@
 // Project dates, individual repository URLs, and screenshots were not supplied.
 export const identity = {
   name: "Sujal Agarwal",
-  email: "sujalagarwaljrt@gmail.com",
+  email: "work.sujalagarwal@gmail.com",
   github: "https://github.com/filedotclose",
-  linkedin: "https://www.linkedin.com/in/filedotclose/",
+  linkedin: "https://www.linkedin.com/in/filedotclose",
+  linkedinHandle: "/in/filedotclose",
+  instagram: "https://instagram.com/sujiisnomore",
+  instagramHandle: "@sujiisnomore",
   location: "Bhubaneswar, India",
   canonicalUrl: process.env.NEXT_PUBLIC_SITE_URL || null,
 };

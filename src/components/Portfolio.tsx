@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useState } from "react";
 import Navigation from "./Navigation";
 import Cursor from "./Cursor";
@@ -17,6 +18,7 @@ import SceneBridge from "./SceneBridge";
 import Profile from "./Profile";
 import BuildIndex from "./BuildIndex";
 import Contact from "./Contact";
+import ScrollFeatures from "./ScrollFeatures";
 
 const OpticalLens = dynamic(() => import("./OpticalLens"), { ssr: false });
 const fields = [GatepassField, PipelineField, OrderingField, HostelField];
@@ -180,10 +182,80 @@ export default function Portfolio() {
             </div>
           );
         })}
+        {/* Open Source & GitHub Projects Showcase Callout */}
+        <section
+          className="projects-archive-callout"
+          style={{
+            padding: "clamp(48px, 7vw, 84px) clamp(20px, 4.5vw, 64px)",
+            borderTop: "1px solid var(--line)",
+            borderBottom: "1px solid var(--line)",
+            background: "rgba(37, 40, 34, 0.03)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            alignItems: "flex-start",
+          }}
+          aria-labelledby="archive-callout-heading"
+        >
+          <div className="section-label">
+            <span>02 / Open Source & Engineering</span>
+            <span>All GitHub Projects</span>
+          </div>
+          <h2
+            id="archive-callout-heading"
+            style={{
+              fontSize: "clamp(30px, 4.4vw, 56px)",
+              fontWeight: 500,
+              lineHeight: 1.1,
+              letterSpacing: "-0.035em",
+              maxWidth: "24ch",
+            }}
+          >
+            Explore all 9 GitHub projects with interactive schematics
+            <span className="accent">.</span>
+          </h2>
+          <p
+            style={{
+              maxWidth: "64ch",
+              fontSize: "clamp(15px, 1.15vw, 17px)",
+              lineHeight: 1.6,
+              color: "var(--muted)",
+            }}
+          >
+            Access the complete GitHub repository archive — including KIIT KSAC
+            GatePass Pro, AI Review & Construction DPR System, Gesture-MIDI computer
+            vision instrument, KLICK mechanical switch audio emulator, Online Kafe,
+            and more.
+          </p>
+          <Link
+            href="/projects"
+            style={{
+              fontSize: "13px",
+              fontWeight: 650,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              padding: "14px 24px",
+              background: "var(--ink)",
+              color: "var(--paper)",
+              border: "1px solid var(--ink)",
+              borderRadius: "4px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              marginTop: "8px",
+            }}
+            data-cursor="PROJECTS"
+          >
+            Explore All 9 Projects (GSAP Horizontal Showcase){" "}
+            <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+
         <Profile />
         <BuildIndex />
         <Contact />
       </main>
+      <ScrollFeatures />
       <ProjectDetail
         project={detail === null ? null : projects[detail]}
         onClose={() => setDetail(null)}

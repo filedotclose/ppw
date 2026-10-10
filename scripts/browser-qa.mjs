@@ -291,16 +291,51 @@ try {
       .evaluate((element) => element !== document.activeElement)
   )
     failures.push("Menu destination did not receive keyboard focus");
+  await expect(page.locator('link[rel="author"]')).toHaveAttribute(
+    "href",
+    "mailto:work.sujalagarwal@gmail.com",
+  );
   await expect(page.locator(".contact-primary")).toHaveAttribute(
     "href",
-    "mailto:sujalagarwaljrt@gmail.com",
+    "mailto:work.sujalagarwal@gmail.com",
   );
+  await expect(page.locator(".contact-primary")).toContainText(
+    "work.sujalagarwal@gmail.com",
+  );
+  const instaLink = page
+    .locator(".contact-socials")
+    .getByRole("link", { name: /Instagram/ });
+  await expect(instaLink).toHaveAttribute(
+    "href",
+    "https://instagram.com/sujiisnomore",
+  );
+  await expect(instaLink).toHaveAttribute("target", "_blank");
+  await expect(instaLink).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(instaLink).toContainText("@sujiisnomore");
+
+  const linkedinLink = page
+    .locator(".contact-socials")
+    .getByRole("link", { name: /LinkedIn/ });
+  await expect(linkedinLink).toHaveAttribute(
+    "href",
+    "https://www.linkedin.com/in/filedotclose",
+  );
+  await expect(linkedinLink).toHaveAttribute("target", "_blank");
+  await expect(linkedinLink).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(linkedinLink).toContainText("/in/filedotclose");
+
+  await expect(
+    page.locator(".footer").getByRole("link", { name: /Email/ }),
+  ).toHaveAttribute("href", "mailto:work.sujalagarwal@gmail.com");
   await expect(
     page.locator(".footer").getByRole("link", { name: /GitHub/ }),
   ).toHaveAttribute("href", "https://github.com/filedotclose");
   await expect(
     page.locator(".footer").getByRole("link", { name: /LinkedIn/ }),
-  ).toHaveAttribute("href", "https://www.linkedin.com/in/filedotclose/");
+  ).toHaveAttribute("href", "https://www.linkedin.com/in/filedotclose");
+  await expect(
+    page.locator(".footer").getByRole("link", { name: /Instagram/ }),
+  ).toHaveAttribute("href", "https://instagram.com/sujiisnomore");
   const webgl = await page.evaluate(
     () => document.documentElement.dataset.webgl || "fallback",
   );
@@ -356,6 +391,12 @@ try {
       }
     }
   }
+  await expect(
+    mobile.locator(".contact-socials").getByRole("link", { name: /Instagram/ }),
+  ).toHaveAttribute("href", "https://instagram.com/sujiisnomore");
+  await expect(
+    mobile.locator(".contact-socials").getByRole("link", { name: /LinkedIn/ }),
+  ).toHaveAttribute("href", "https://www.linkedin.com/in/filedotclose");
   if (
     await mobile.evaluate(
       () => document.documentElement.scrollWidth > window.innerWidth,
