@@ -82,6 +82,8 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform vec2 uLensCenter;
   uniform float uAspect;
   uniform float uFocus;
+  uniform vec2 uVelocity;
+  uniform float uAberration;
   varying vec3 vLocalPosition;
   varying vec3 vWorldPosition;
   varying vec3 vWorldNormal;
@@ -114,10 +116,15 @@ const FRAGMENT_SHADER = /* glsl */ `
     float edge = pow(1.0 - facing, 2.1);
 
     // Refract the active scene's viewport-aligned text, not a card attached
-    // to the object. Slightly different indices split letter edges only.
-    vec3 rayR = refract(-viewDirection, normal, 1.0 / 1.465);
-    vec3 rayG = refract(-viewDirection, normal, 1.0 / 1.480);
-    vec3 rayB = refract(-viewDirection, normal, 1.0 / 1.498);
+    // to the object. Velocity-reactive dispersion widens spectral index spread.
+    float dynamicSpread = clamp(uAberration * 0.048, 0.0, 0.08);
+    float iorR = 1.0 / (1.465 - dynamicSpread);
+    float iorG = 1.0 / 1.480;
+    float iorB = 1.0 / (1.498 + dynamicSpread);
+
+    vec3 rayR = refract(-viewDirection, normal, iorR);
+    vec3 rayG = refract(-viewDirection, normal, iorG);
+    vec3 rayB = refract(-viewDirection, normal, iorB);
     vec2 screenUV = gl_FragCoord.xy / uResolution;
     vec2 baseUV = uLensCenter + (screenUV - uLensCenter) * mix(0.96, 0.66, uFocus);
     vec2 screenScale = vec2(1.0 / uAspect, 1.0);
@@ -125,15 +132,20 @@ const FRAGMENT_SHADER = /* glsl */ `
     float opticalDepth = mix(0.035, 0.31, uFocus) + 0.14 * (1.0 - facing);
     vec2 localCurve = vLocalPosition.xy / vec2(2.45, 2.95);
     vec2 bend = (normal.xy * 0.045 + localCurve * length(localCurve) * 0.055) * screenScale;
-    vec2 uvR = baseUV + rayR.xy * screenScale * opticalDepth + bend;
+
+    // Directional chromatic aberration vector proportional to kinetic motion
+    vec2 chromaFlare = uVelocity * screenScale * (0.016 * uAberration) * (1.0 - facing * 0.45);
+
+    vec2 uvR = baseUV + rayR.xy * screenScale * opticalDepth + bend - chromaFlare;
     vec2 uvG = baseUV + rayG.xy * screenScale * opticalDepth + bend;
-    vec2 uvB = baseUV + rayB.xy * screenScale * opticalDepth + bend;
+    vec2 uvB = baseUV + rayB.xy * screenScale * opticalDepth + bend + chromaFlare;
+
     vec3 printColor = vec3(
       texture2D(uTypography, uvR).r,
       texture2D(uTypography, uvG).g,
       texture2D(uTypography, uvB).b
     );
-    vec3 secondPrint = texture2D(uTypography, uvG + rayG.xy * screenScale * opticalDepth * 0.35).rgb;
+    vec3 secondPrint = texture2D(uTypography, uvG + rayG.xy * screenScale * opticalDepth * 0.35 + chromaFlare * 0.5).rgb;
     printColor = mix(printColor, secondPrint, 0.08 * (1.0 - facing));
 
     // Beer-Lambert-like absorption increases along oblique optical paths.
@@ -590,6 +602,14 @@ export default function OpticalLens() {
       let previousScrollY = window.scrollY;
       let previousScrollTime = performance.now();
       let velocity = 0;
+      let pointerVelocityX = 0;
+      let pointerVelocityY = 0;
+      let previousPointerClientX = 0;
+      let previousPointerClientY = 0;
+      let previousPointerTime = 0;
+      let smoothedVelocityX = 0;
+      let smoothedVelocityY = 0;
+      let smoothedAberration = 0;
       let pointerX = 0;
       let pointerY = 0;
       let smoothedPointerX = 0;
@@ -631,6 +651,8 @@ export default function OpticalLens() {
           },
           uAspect: { value: 1 },
           uFocus: { value: targetFocus },
+          uVelocity: { value: new THREE.Vector2(0, 0) },
+          uAberration: { value: 0 },
         },
         transparent: true,
         depthWrite: false,
@@ -958,6 +980,11 @@ export default function OpticalLens() {
             smoothedPointerX = 0;
             smoothedPointerY = 0;
             velocity = 0;
+            pointerVelocityX = 0;
+            pointerVelocityY = 0;
+            smoothedVelocityX = 0;
+            smoothedVelocityY = 0;
+            smoothedAberration = 0;
           } else {
             smoothedPointerX = THREE.MathUtils.lerp(
               smoothedPointerX,
@@ -970,8 +997,39 @@ export default function OpticalLens() {
               damping,
             );
             velocity *= Math.exp(-dt * 5.5);
+            pointerVelocityX *= Math.exp(-dt * 6.5);
+            pointerVelocityY *= Math.exp(-dt * 6.5);
+            const targetVelX = pointerVelocityX;
+            const targetVelY = pointerVelocityY + velocity * 0.8;
+            smoothedVelocityX = THREE.MathUtils.lerp(
+              smoothedVelocityX,
+              targetVelX,
+              damping,
+            );
+            smoothedVelocityY = THREE.MathUtils.lerp(
+              smoothedVelocityY,
+              targetVelY,
+              damping,
+            );
+            const speed = Math.hypot(smoothedVelocityX, smoothedVelocityY);
+            const targetAberration =
+              THREE.MathUtils.clamp(speed * 0.95, 0, 1.4) *
+              (mobile ? 0.45 : 1.0);
+            smoothedAberration = THREE.MathUtils.lerp(
+              smoothedAberration,
+              targetAberration,
+              damping,
+            );
+            if (Math.abs(smoothedAberration) < 0.001) smoothedAberration = 0;
+            if (Math.abs(smoothedVelocityX) < 0.001) smoothedVelocityX = 0;
+            if (Math.abs(smoothedVelocityY) < 0.001) smoothedVelocityY = 0;
           }
-          if (interaction === 0) velocity = 0;
+          if (interaction === 0) {
+            velocity = 0;
+            smoothedVelocityX = 0;
+            smoothedVelocityY = 0;
+            smoothedAberration = 0;
+          }
           smoothedFocus =
             initialPose || reducedMotion
               ? targetFocus
@@ -1024,6 +1082,16 @@ export default function OpticalLens() {
             smoothedPointerX * interaction,
             smoothedPointerY * interaction,
           );
+          material.uniforms.uVelocity.value.set(
+            smoothedVelocityX * interaction,
+            smoothedVelocityY * interaction,
+          );
+          material.uniforms.uAberration.value =
+            smoothedAberration * interaction;
+          canvas.dataset.aberration = (
+            smoothedAberration * interaction
+          ).toFixed(4);
+          canvas.dataset.velocity = `${(smoothedVelocityX * interaction).toFixed(3)},${(smoothedVelocityY * interaction).toFixed(3)}`;
           material.uniforms.uFocus.value = smoothedFocus;
           material.uniforms.uLensCenter.value.set(
             lens.position.x / worldWidth + 0.5,
@@ -1056,6 +1124,9 @@ export default function OpticalLens() {
             Math.abs(smoothedPointerX - pointerX) > 0.001 ||
             Math.abs(smoothedPointerY - pointerY) > 0.001 ||
             Math.abs(velocity) > 0.001 ||
+            Math.abs(smoothedVelocityX) > 0.001 ||
+            Math.abs(smoothedVelocityY) > 0.001 ||
+            Math.abs(smoothedAberration) > 0.001 ||
             Math.abs(smoothedFocus - targetFocus) > 0.0001 ||
             Math.abs(lens.scale.x - targetScale) > 0.0001;
           if (!reducedMotion && unsettled) requestFrame();
@@ -1122,6 +1193,24 @@ export default function OpticalLens() {
         previousScrollTime = now;
         requestFrame();
       };
+      const onWheel = (event: WheelEvent) => {
+        if (reducedMotion || mobile || interaction === 0) return;
+        const scale =
+          event.deltaMode === 1
+            ? 24
+            : event.deltaMode === 2
+              ? viewportHeight
+              : 1;
+        const impulseY = (event.deltaY * scale) / viewportHeight;
+        const impulseX = (event.deltaX * scale) / viewportWidth;
+        velocity = THREE.MathUtils.clamp(velocity + impulseY * 2.2, -3, 3);
+        pointerVelocityX = THREE.MathUtils.clamp(
+          pointerVelocityX + impulseX * 2.2,
+          -3,
+          3,
+        );
+        requestFrame();
+      };
       const onPointerMove = (event: PointerEvent) => {
         if (
           reducedMotion ||
@@ -1130,6 +1219,27 @@ export default function OpticalLens() {
           event.pointerType === "touch"
         )
           return;
+        const now = performance.now();
+        if (previousPointerTime > 0) {
+          const elapsed = Math.max(16, now - previousPointerTime);
+          const deltaX =
+            (event.clientX - previousPointerClientX) / viewportWidth;
+          const deltaY =
+            (event.clientY - previousPointerClientY) / viewportHeight;
+          pointerVelocityX = THREE.MathUtils.clamp(
+            (deltaX * 1000) / elapsed,
+            -3,
+            3,
+          );
+          pointerVelocityY = THREE.MathUtils.clamp(
+            (deltaY * 1000) / elapsed,
+            -3,
+            3,
+          );
+        }
+        previousPointerClientX = event.clientX;
+        previousPointerClientY = event.clientY;
+        previousPointerTime = now;
         pointerX = THREE.MathUtils.clamp(
           (event.clientX / viewportWidth) * 2 - 1,
           -1,
@@ -1145,6 +1255,9 @@ export default function OpticalLens() {
       const onPointerLeave = () => {
         pointerX = 0;
         pointerY = 0;
+        pointerVelocityX = 0;
+        pointerVelocityY = 0;
+        previousPointerTime = 0;
         requestFrame();
       };
       const onResize = () => {
@@ -1157,6 +1270,11 @@ export default function OpticalLens() {
           geometry = nextGeometry;
           pointerX = 0;
           pointerY = 0;
+          pointerVelocityX = 0;
+          pointerVelocityY = 0;
+          smoothedVelocityX = 0;
+          smoothedVelocityY = 0;
+          smoothedAberration = 0;
         }
         layoutDirty = true;
         requestFrame();
@@ -1185,6 +1303,11 @@ export default function OpticalLens() {
         reducedMotion = motionQuery.matches;
         pointerX = 0;
         pointerY = 0;
+        pointerVelocityX = 0;
+        pointerVelocityY = 0;
+        smoothedVelocityX = 0;
+        smoothedVelocityY = 0;
+        smoothedAberration = 0;
         previousTime = 0;
         typographyDirty = true;
         layoutDirty = true;
@@ -1199,6 +1322,11 @@ export default function OpticalLens() {
           previousScrollY = window.scrollY;
           previousScrollTime = performance.now();
           velocity = 0;
+          pointerVelocityX = 0;
+          pointerVelocityY = 0;
+          smoothedVelocityX = 0;
+          smoothedVelocityY = 0;
+          smoothedAberration = 0;
           sectionsDirty = true;
           typographyDirty = true;
           targetFocus = readFocus();
@@ -1243,6 +1371,7 @@ export default function OpticalLens() {
       listen(document, "input", onInput);
       listen(window, "optical:focus", onFocusChange);
       listen(window, "scroll", onScroll);
+      listen(window, "wheel", onWheel as EventListener);
       listen(window, "resize", onResize);
       listen(window, "pointermove", onPointerMove as EventListener);
       listen(document.documentElement, "pointerleave", onPointerLeave);
