@@ -1047,29 +1047,307 @@
 }
 
 /* =========================================================================
-   Mobile and Responsive Adjustments
+   Mobile and Responsive Adjustments (320px–768px, folding & landscape phones)
    ========================================================================= */
 @media (max-width: 768px) {
+  .projects-chrome {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .projects-header-inner {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
   .projects-header-center {
     display: none;
   }
+
+  .projects-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 14px;
+    overflow: visible;
+  }
+
+  .projects-filter-chips {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 6px;
+    padding: 2px 0;
+  }
+
+  .projects-filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-chip {
+    padding: 5px 11px;
+    font-size: 10.5px;
+    flex-shrink: 0;
+    min-height: 32px;
+  }
+
+  .projects-nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    padding-left: 6px;
+  }
+
+  .nav-stepper-count {
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .nav-arrow-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    border-radius: 4px;
+  }
+
+  .projects-viewport {
+    padding-top: 110px;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .projects-horizontal-track {
+    padding: 0 14px;
+    gap: 14px;
+    height: 100%;
+  }
+
+  .project-study-panel {
+    width: min(calc(100vw - 28px), 430px);
+    max-width: calc(100vw - 28px);
+    height: 100%;
+    max-height: calc(100svh - 126px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding: 14px 16px;
+    border-radius: 6px;
+  }
+
   .panel-heading {
+    margin: 6px 0 8px;
+    gap: 10px;
+  }
+
+  .panel-title {
+    font-size: clamp(22px, 5.2vw, 34px);
+    line-height: 1.05;
+  }
+
+  .panel-open-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .study-visual {
     margin: 8px 0;
   }
-  .panel-open-btn {
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
-  }
-  .project-study-panel {
-    width: 92vw;
-    padding: 14px 16px;
-  }
+
   .panel-bottom {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 10px;
   }
+
+  .panel-description {
+    font-size: 13px;
+    line-height: 1.55;
+    max-width: 100%;
+  }
+
   .panel-footer-actions {
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .panel-explore-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
+  }
+
+  .panel-repo-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  /* Projects Detail Modal on Mobile */
+  .projects-detail-dialog {
+    width: 95vw;
+    max-width: 95vw;
+    max-height: 92svh;
+    margin: auto;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-body {
+    padding: 16px 14px;
+    gap: 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-title {
+    font-size: clamp(22px, 5vw, 32px);
+  }
+
+  .modal-lead {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .modal-metrics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .metric-value {
+    font-size: 13.5px;
+  }
+
+  .modal-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .modal-footer-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .modal-ext-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  /* Grid View on Mobile */
+  .projects-grid-container {
+    padding: 116px 14px 60px;
+    gap: 28px;
+  }
+
+  .project-study-panel--grid {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* Ultra-compact phones (320px–360px: iPhone SE, Galaxy Fold cover) */
+@media (max-width: 420px) {
+  .projects-header-inner {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .projects-back-link {
+    padding: 5px 8px;
+    font-size: 10.5px;
+    min-height: 34px;
+  }
+
+  .projects-header-actions {
+    gap: 4px;
+  }
+
+  .view-toggle-btn {
+    padding: 5px 7px;
+    font-size: 10px;
+    min-height: 34px;
+  }
+
+  .projects-github-link {
+    padding: 5px 7px;
+    font-size: 10px;
+    min-height: 34px;
+  }
+
+  .projects-viewport {
+    padding-top: 104px;
+  }
+
+  .project-study-panel {
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    padding: 12px 14px;
+  }
+
+  .panel-title {
+    font-size: clamp(20px, 4.8vw, 26px);
+  }
+
+  .panel-open-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .ksac-code-display {
+    font-size: clamp(18px, 4.8vw, 26px) !important;
+  }
+
+  .ai-module-title {
+    font-size: clamp(20px, 4.8vw, 28px) !important;
+  }
+
+  .klick-sound-text {
+    font-size: clamp(20px, 4.8vw, 28px) !important;
+  }
+}
+
+/* Mobile landscape orientation */
+@media (max-height: 520px) and (orientation: landscape) {
+  .projects-viewport {
+    padding-top: 92px;
+    padding-bottom: 6px;
+  }
+
+  .project-study-panel {
+    max-height: calc(100svh - 100px);
+    width: min(85vw, 540px);
+    padding: 10px 14px;
+  }
+
+  .panel-heading {
+    margin: 4px 0 6px;
+  }
+
+  .panel-title {
+    font-size: clamp(18px, 3.2vw, 26px);
+  }
+
+  .study-visual {
+    margin: 4px 0;
   }
 }

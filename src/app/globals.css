@@ -2101,14 +2101,35 @@ html[data-scene="profile"] [data-optical-lens] {
 }
 @media (max-width: 600px) {
   .intro h2 {
-    font-size: 12.5vw;
+    font-size: clamp(28px, 9.8vw, 46px);
     line-height: 1.15;
+    letter-spacing: -0.04em;
+  }
+  .intro-line {
+    white-space: normal;
+    word-break: break-word;
   }
   .intro-line--two {
-    margin-left: 2%;
+    margin-left: 0;
   }
   .intro-line--three {
     margin-left: 0;
+  }
+  .bridge-before span,
+  .bridge-after span {
+    font-size: clamp(28px, 13.5vw, 56px);
+    letter-spacing: -0.05em;
+  }
+  .projects-archive-callout h2 {
+    font-size: clamp(24px, 6.8vw, 36px) !important;
+  }
+  .projects-archive-callout a {
+    font-size: 12px !important;
+    padding: 12px 18px !important;
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
   }
   .contact-primary[href^="mailto:"] {
     font-size: clamp(10.5px, 3.4vw, 15px);
@@ -2122,11 +2143,21 @@ html[data-scene="profile"] [data-optical-lens] {
   }
 }
 @media (max-width: 360px) {
+  :root {
+    --gutter: 14px;
+  }
+  .hero-title {
+    font-size: clamp(40px, 16vw, 56px);
+  }
+  .hero-caption {
+    font-size: 12px;
+  }
   .contact-action {
-    margin: 50px 0 0 0;
+    margin: 40px 0 0 0;
   }
   .contact-primary[href^="mailto:"] {
-    font-size: 11px;
+    font-size: 10px;
+    padding: 12px 0;
   }
   .footer {
     flex-direction: column;
@@ -2135,7 +2166,8 @@ html[data-scene="profile"] [data-optical-lens] {
   }
   .footer > div {
     justify-content: flex-start;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 }
 @media (pointer: coarse) {

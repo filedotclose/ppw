@@ -163,33 +163,35 @@ export default function MotionSystem() {
           0.5,
         );
 
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: ".intro",
-            start: "top 85%",
-            end: "bottom 30%",
-            scrub: 0.65,
-          },
-        })
-        .fromTo(
-          ".intro-line--one",
-          { xPercent: -8 },
-          { xPercent: 5, ease: "none" },
-          0,
-        )
-        .fromTo(
-          ".intro-line--two",
-          { xPercent: 12 },
-          { xPercent: -4, ease: "none" },
-          0,
-        )
-        .fromTo(
-          ".intro-line--three",
-          { xPercent: -3 },
-          { xPercent: 7, ease: "none" },
-          0,
-        );
+      if (window.innerWidth > 900) {
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: ".intro",
+              start: "top 85%",
+              end: "bottom 30%",
+              scrub: 0.65,
+            },
+          })
+          .fromTo(
+            ".intro-line--one",
+            { xPercent: -8 },
+            { xPercent: 5, ease: "none" },
+            0,
+          )
+          .fromTo(
+            ".intro-line--two",
+            { xPercent: 12 },
+            { xPercent: -4, ease: "none" },
+            0,
+          )
+          .fromTo(
+            ".intro-line--three",
+            { xPercent: -3 },
+            { xPercent: 7, ease: "none" },
+            0,
+          );
+      }
 
       gsap.utils.toArray<HTMLElement>(".study").forEach((scene) => {
         const media = scene.querySelector(".study-visual");
