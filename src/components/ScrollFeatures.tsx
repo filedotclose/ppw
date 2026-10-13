@@ -1,4 +1,5 @@
 "use client";
+import VectorArrow from "./VectorArrow";
 
 export default function ScrollFeatures() {
   const scrollToTop = () => {
@@ -20,9 +21,7 @@ export default function ScrollFeatures() {
         onClick={scrollToTop}
         data-cursor="TOP"
       >
-        <span className="back-to-top-arrow" aria-hidden="true">
-          ↑
-        </span>
+        <VectorArrow direction="up" className="back-to-top-arrow" />
         <span className="back-to-top-label">TOP</span>
       </button>
     </>

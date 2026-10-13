@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 
 import Link from "next/link";
+import VectorArrow from "./VectorArrow";
 
 const links = [
   ["Beginning", "#top"],
@@ -115,10 +116,10 @@ export default function Navigation() {
         </span>
         <div className="nav-actions">
           <Link href="/projects" className="nav-work">
-            GitHub Projects <span aria-hidden="true">↗</span>
+            GitHub Projects <VectorArrow direction="up-right" />
           </Link>
           <a href="#work" className="nav-work">
-            Explore the work <span aria-hidden="true">↓</span>
+            Explore the work <VectorArrow direction="down" />
           </a>
           <button
             ref={opener}
@@ -167,9 +168,11 @@ export default function Navigation() {
                 >
                   <span className="menu-index">0{index + 1}</span>
                   {label}
-                  <span className="menu-arrow" aria-hidden="true">
-                    ↗
-                  </span>
+                  <VectorArrow
+                    direction="up-right"
+                    className="menu-arrow"
+                    strokeWidth={1.5}
+                  />
                 </a>
               </div>
             ))}

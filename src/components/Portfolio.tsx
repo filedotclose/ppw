@@ -19,6 +19,7 @@ import Profile from "./Profile";
 import BuildIndex from "./BuildIndex";
 import Contact from "./Contact";
 import ScrollFeatures from "./ScrollFeatures";
+import VectorArrow from "./VectorArrow";
 
 const OpticalLens = dynamic(() => import("./OpticalLens"), { ssr: false });
 const fields = [GatepassField, PipelineField, OrderingField, HostelField];
@@ -76,7 +77,7 @@ export default function Portfolio() {
             <div className="hero-foot">
               <span>Selected work & experience.</span>
               <a href="#work">
-                Scroll to look closer <span aria-hidden="true">↓</span>
+                Scroll to look closer <VectorArrow direction="down" />
               </a>
               <span className="hero-foot-right">{identity.location}</span>
             </div>
@@ -112,7 +113,7 @@ export default function Portfolio() {
               pipelines.
             </p>
             <a className="text-action" href="#profile">
-              View my experience <span aria-hidden="true">↘</span>
+              View my experience <VectorArrow direction="down-right" />
             </a>
           </div>
         </section>
@@ -161,7 +162,7 @@ export default function Portfolio() {
                     aria-label={`Read about ${project.title}`}
                     data-cursor="VIEW"
                   >
-                    <span aria-hidden="true">↗</span>
+                    <VectorArrow direction="up-right" strokeWidth={1.5} />
                   </button>
                 </div>
                 <Field />
@@ -174,7 +175,7 @@ export default function Portfolio() {
                       onClick={() => setDetail(index)}
                       data-cursor="VIEW"
                     >
-                      Explore the project <span aria-hidden="true">↗</span>
+                      Explore the project <VectorArrow direction="up-right" />
                     </button>
                   </div>
                 </div>
@@ -247,7 +248,7 @@ export default function Portfolio() {
             data-cursor="PROJECTS"
           >
             Explore All 9 Projects (GSAP Horizontal Showcase){" "}
-            <span aria-hidden="true">→</span>
+            <VectorArrow direction="right" />
           </Link>
         </section>
 

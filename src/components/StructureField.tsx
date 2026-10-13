@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import VectorArrow from "./VectorArrow";
 
 const layers = [
   {
@@ -59,7 +60,7 @@ export default function StructureField() {
               <span className="plane-title">{layer.name}</span>
               <span className="plane-foot">
                 {layer.label}
-                <span aria-hidden="true">↗</span>
+                <VectorArrow direction="up-right" />
               </span>
             </button>
           ))}
@@ -94,7 +95,7 @@ export default function StructureField() {
           onChange={(event) => setSeparation(Number(event.target.value))}
           aria-valuetext={`${separation} percent separated`}
         />
-        <span aria-hidden="true">↔</span>
+        <VectorArrow direction="left-right" />
       </div>
     </div>
   );

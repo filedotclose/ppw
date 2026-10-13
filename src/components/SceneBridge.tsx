@@ -1,3 +1,5 @@
+import VectorArrow from "./VectorArrow";
+
 export default function SceneBridge({
   from,
   to,
@@ -21,7 +23,11 @@ export default function SceneBridge({
         <div className="bridge-after">
           <span>{to}</span>
         </div>
-        <span className="bridge-direction">↘</span>
+        <VectorArrow
+          direction="down-right"
+          className="bridge-direction"
+          strokeWidth={1.35}
+        />
       </div>
     </div>
   );

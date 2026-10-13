@@ -1,4 +1,6 @@
 import Link from "next/link";
+import VectorArrow from "@/components/VectorArrow";
+
 export default function NotFound() {
   return (
     <main className="not-found">
@@ -10,7 +12,7 @@ export default function NotFound() {
       </h1>
       <p>That page isn’t here.</p>
       <Link href="/" className="text-action">
-        Return to the beginning <span aria-hidden="true">↗</span>
+        Return to the beginning <VectorArrow direction="up-right" />
       </Link>
     </main>
   );

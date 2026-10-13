@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import VectorArrow from "./VectorArrow";
 
 type Rule = "Uppercase" | "Words" | "Reverse";
 const rules: Rule[] = ["Uppercase", "Words", "Reverse"];
@@ -73,7 +74,11 @@ export default function SignalField() {
               onClick={() => setRule(option)}
             >
               {option}
-              <span aria-hidden="true">{rule === option ? "↗" : "+"}</span>
+              {rule === option ? (
+                <VectorArrow direction="up-right" />
+              ) : (
+                <span aria-hidden="true">+</span>
+              )}
             </button>
           ))}
         </div>

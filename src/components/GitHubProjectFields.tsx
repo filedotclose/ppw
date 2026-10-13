@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
+import VectorArrow from "./VectorArrow";
 
 const schematicLabel = "Interactive Schematic / Architecture Simulator";
 
@@ -600,7 +601,8 @@ export function KlickField() {
               playSwitchAcoustic(current.name);
             }}
           >
-            Simulate Key Strike [Spacebar] (Count: {testCount}) ↵
+            Simulate Key Strike [Spacebar] (Count: {testCount}){" "}
+            <VectorArrow direction="return" />
           </button>
           <span className="project-field-kicker project-visual-type">
             Stereo Pan: Center (Col 6) • Latency: 7.2ms
@@ -653,7 +655,7 @@ const kafeLayers = [
   },
   {
     name: "Order Lifecycle",
-    tech: "State Queue: Pending → Prep → Ready",
+    tech: "State Queue: Pending / Prep / Ready",
     detail:
       "Kitchen Kanban board receives incoming orders in real time, alerting staff and student dashboards synchronously.",
   },
@@ -699,7 +701,8 @@ export function OnlineKafeField() {
       >
         <button type="button" onClick={advanceStage}>
           <span className="project-visual-type">
-            Live Ticket #{1042}: {orderStage} (Click to Advance) ↗
+            Live Ticket #{1042}: {orderStage} (Click to Advance){" "}
+            <VectorArrow direction="up-right" />
           </span>
         </button>
       </div>

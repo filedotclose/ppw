@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { githubProjects, type GitHubProject } from "@/data/github-projects";
 import { githubFieldComponents } from "./GitHubProjectFields";
 import Cursor from "./Cursor";
+import VectorArrow from "./VectorArrow";
 
 export default function GitHubProjectsShowcase() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -218,7 +219,7 @@ export default function GitHubProjectsShowcase() {
       <header className="projects-chrome">
         <div className="projects-header-inner">
           <Link href="/" className="projects-back-link" data-cursor="BACK">
-            <span aria-hidden="true">←</span> Back to Portfolio
+            <VectorArrow direction="left" /> Back to Portfolio
           </Link>
 
           <div className="projects-header-center">
@@ -249,7 +250,7 @@ export default function GitHubProjectsShowcase() {
               className="projects-github-link"
               data-cursor="GITHUB"
             >
-              GitHub / filedotclose <span aria-hidden="true">↗</span>
+              GitHub / filedotclose <VectorArrow direction="up-right" />
             </a>
           </div>
         </div>
@@ -291,7 +292,7 @@ export default function GitHubProjectsShowcase() {
               aria-label="Previous project"
               data-cursor="PREV"
             >
-              ←
+              <VectorArrow direction="left" />
             </button>
             <span className="nav-stepper-count" aria-live="polite">
               0{activeProjectIndex + 1} / 0{filteredProjects.length}
@@ -304,7 +305,7 @@ export default function GitHubProjectsShowcase() {
               aria-label="Next project"
               data-cursor="NEXT"
             >
-              →
+              <VectorArrow direction="right" />
             </button>
           </div>
         </nav>
@@ -366,7 +367,7 @@ export default function GitHubProjectsShowcase() {
                         aria-label={`Inspect ${project.title} architecture`}
                         data-cursor="VIEW"
                       >
-                        <span aria-hidden="true">↗</span>
+                        <VectorArrow direction="up-right" strokeWidth={1.5} />
                       </button>
                     </div>
 
@@ -390,7 +391,7 @@ export default function GitHubProjectsShowcase() {
                             data-cursor="VIEW"
                           >
                             Explore Architecture{" "}
-                            <span aria-hidden="true">↗</span>
+                            <VectorArrow direction="up-right" />
                           </button>
                           <a
                             href={project.githubUrl}
@@ -399,7 +400,7 @@ export default function GitHubProjectsShowcase() {
                             className="panel-ext-pill"
                             data-cursor="REPO"
                           >
-                            GitHub Repo <span aria-hidden="true">↗</span>
+                            GitHub Repo <VectorArrow direction="up-right" />
                           </a>
                           {project.liveUrl && (
                             <a
@@ -409,7 +410,7 @@ export default function GitHubProjectsShowcase() {
                               className="panel-ext-pill panel-ext-pill--live"
                               data-cursor="LIVE"
                             >
-                              Live App <span aria-hidden="true">↗</span>
+                              Live App <VectorArrow direction="up-right" />
                             </a>
                           )}
                         </div>
@@ -466,7 +467,7 @@ export default function GitHubProjectsShowcase() {
                       aria-label={`Inspect ${project.title} architecture`}
                       data-cursor="VIEW"
                     >
-                      <span aria-hidden="true">↗</span>
+                      <VectorArrow direction="up-right" strokeWidth={1.5} />
                     </button>
                   </div>
 
@@ -485,7 +486,7 @@ export default function GitHubProjectsShowcase() {
                           onClick={() => setSelectedModalProject(project)}
                           data-cursor="VIEW"
                         >
-                          Explore Architecture <span aria-hidden="true">↗</span>
+                          Explore Architecture <VectorArrow direction="up-right" />
                         </button>
                         <a
                           href={project.githubUrl}
@@ -494,7 +495,7 @@ export default function GitHubProjectsShowcase() {
                           className="panel-ext-pill"
                           data-cursor="REPO"
                         >
-                          GitHub Repo <span aria-hidden="true">↗</span>
+                          GitHub Repo <VectorArrow direction="up-right" />
                         </a>
                         {project.liveUrl && (
                           <a
@@ -504,7 +505,7 @@ export default function GitHubProjectsShowcase() {
                             className="panel-ext-pill panel-ext-pill--live"
                             data-cursor="LIVE"
                           >
-                            Live App <span aria-hidden="true">↗</span>
+                            Live App <VectorArrow direction="up-right" />
                           </a>
                         )}
                       </div>
@@ -600,7 +601,7 @@ export default function GitHubProjectsShowcase() {
                     className="modal-ext-btn modal-ext-btn--primary"
                     data-cursor="REPO"
                   >
-                    View Source Code on GitHub ↗
+                    View Source Code on GitHub <VectorArrow direction="up-right" />
                   </a>
                   {selectedModalProject.liveUrl && (
                     <a
@@ -610,7 +611,7 @@ export default function GitHubProjectsShowcase() {
                       className="modal-ext-btn modal-ext-btn--secondary"
                       data-cursor="LIVE"
                     >
-                      Open Live Deployment ↗
+                      Open Live Deployment <VectorArrow direction="up-right" />
                     </a>
                   )}
                 </div>

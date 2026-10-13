@@ -50,7 +50,7 @@ export const githubProjects: GitHubProject[] = [
     context:
       "Campus hostels enforce strict evening curfews (7:00 PM – 7:30 PM). Students participating in legitimate society workshops and hackathons at the Student Activity Center previously relied on handwritten paper slips prone to signature forgery and lost transit verification.",
     implementation:
-      "Engineered an automated digital state machine: PENDING → APPROVED → HOSTEL_EXIT → IN_KSAC → KSAC_EXIT → RETURNED. Built tri-tier RBAC for Students, Hostel Wardens, and KSAC Desk Authorities with tamper-resistant cryptographic audit logs and QR token scanning.",
+      "Engineered an automated digital state machine: PENDING / APPROVED / HOSTEL_EXIT / IN_KSAC / KSAC_EXIT / RETURNED. Built tri-tier RBAC for Students, Hostel Wardens, and KSAC Desk Authorities with tamper-resistant cryptographic audit logs and QR token scanning.",
     detail:
       "Stress-tested with 500 simulated concurrent users. Next.js App Router API handlers with Mongoose connection pooling and httpOnly JWT authentication ensure sub-second state transitions and zero curfew slip tampering.",
     metrics: [
@@ -204,12 +204,12 @@ export const githubProjects: GitHubProject[] = [
     context:
       "Campus canteens face severe rush-hour bottlenecks. Physical ordering queues cause wait times of 20+ minutes and frequent order mix-ups between the counter and the preparation kitchen.",
     implementation:
-      "Developed a modern web application using Next.js 16 and React 19. Implemented persistent client-side cart state with Redux Toolkit, real-time order lifecycle tracking (Pending → Preparing → Ready), and an executive dashboard for kitchen inventory control.",
+      "Developed a modern web application using Next.js 16 and React 19. Implemented persistent client-side cart state with Redux Toolkit, real-time order lifecycle tracking (Pending / Preparing / Ready), and an executive dashboard for kitchen inventory control.",
     detail:
       "Backed by MongoDB with Mongoose indexing, Zod schema validation for all incoming order payloads, and secure role-based JWT authentication separating customer and canteen admin actions.",
     metrics: [
       { label: "Next.js Engine", value: "Next.js 16 App Router" },
-      { label: "Order State", value: "Pending → Prep → Ready" },
+      { label: "Order State", value: "Pending / Prep / Ready" },
       { label: "Validation", value: "Strict Zod Schemas" },
       { label: "State Store", value: "Redux Toolkit Persist" },
     ],

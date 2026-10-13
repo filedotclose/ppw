@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { identity } from "@/data/portfolio";
+import VectorArrow from "./VectorArrow";
 
 export default function Contact() {
   const [status, setStatus] = useState("");
@@ -78,7 +79,7 @@ export default function Contact() {
                 aria-label={`Send email to ${identity.email}`}
               >
                 {identity.email}
-                <span aria-hidden="true">↗</span>
+                <VectorArrow direction="up-right" />
               </a>
             ) : (
               <button
@@ -91,7 +92,7 @@ export default function Contact() {
                 className="contact-primary"
                 onClick={copy}
               >
-                Take the link with you<span aria-hidden="true">↗</span>
+                Take the link with you<VectorArrow direction="up-right" />
               </button>
             )}
             <nav
@@ -119,9 +120,10 @@ export default function Contact() {
                       </span>
                     )}
                   </span>
-                  <span aria-hidden="true" className="contact-social-arrow">
-                    ↗
-                  </span>
+                  <VectorArrow
+                    direction="up-right"
+                    className="contact-social-arrow"
+                  />
                 </a>
               )}
               {identity.linkedin && (
@@ -145,9 +147,10 @@ export default function Contact() {
                       </span>
                     )}
                   </span>
-                  <span aria-hidden="true" className="contact-social-arrow">
-                    ↗
-                  </span>
+                  <VectorArrow
+                    direction="up-right"
+                    className="contact-social-arrow"
+                  />
                 </a>
               )}
             </nav>
@@ -173,7 +176,7 @@ export default function Contact() {
                 href={`mailto:${identity.email}`}
                 aria-label={`Email ${identity.email}`}
               >
-                Email ↗
+                Email <VectorArrow direction="up-right" />
               </a>
             )}
             {identity.github && (
@@ -183,7 +186,7 @@ export default function Contact() {
                 rel="noopener noreferrer"
                 aria-label="GitHub profile"
               >
-                GitHub ↗
+                GitHub <VectorArrow direction="up-right" />
               </a>
             )}
             {identity.linkedin && (
@@ -197,7 +200,7 @@ export default function Contact() {
                     : "LinkedIn profile"
                 }
               >
-                LinkedIn ↗
+                LinkedIn <VectorArrow direction="up-right" />
               </a>
             )}
             {identity.instagram && (
@@ -211,11 +214,11 @@ export default function Contact() {
                     : "Instagram profile"
                 }
               >
-                Instagram ↗
+                Instagram <VectorArrow direction="up-right" />
               </a>
             )}
             <a href="#top">
-              Back to the beginning <span aria-hidden="true">↑</span>
+              Back to the beginning <VectorArrow direction="up" />
             </a>
           </div>
         </footer>

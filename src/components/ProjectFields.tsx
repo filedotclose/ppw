@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
+import VectorArrow from "./VectorArrow";
 
 const schematicLabel = "Project schematic / Not a product screenshot";
 
@@ -111,7 +112,7 @@ const pipelineStages = [
     name: "Topic research",
     detail:
       "Python and n8n orchestrate topic research within an automated AWS pipeline.",
-    output: "Topic research → Script generation",
+    output: "Topic research / Script generation",
   },
   {
     verb: "Script",
@@ -130,7 +131,7 @@ const pipelineStages = [
     name: "Voice synthesis",
     detail:
       "Voice synthesis is integrated into the automated video-production workflow.",
-    output: "Voice synthesis → Publication",
+    output: "Voice synthesis / Publication",
   },
   {
     verb: "Publish",
@@ -197,7 +198,7 @@ export function PipelineField() {
           }
         >
           <span className="project-visual-type">Next stage</span>
-          <span aria-hidden="true">↗</span>
+          <VectorArrow direction="up-right" />
         </button>
       </div>
       <div

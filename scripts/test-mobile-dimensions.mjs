@@ -87,10 +87,22 @@ try {
           });
         }
       });
+      const bodyText = document.body.textContent || "";
+      const hasEmojiArrows = /[\u2190-\u21FF]/u.test(bodyText);
+      const vectorArrows = document.querySelectorAll("[data-vector-arrow] svg path");
+      const bridgeVectors = Array.from(
+        document.querySelectorAll(".bridge-direction svg"),
+      ).map((svg) => {
+        const rect = svg.getBoundingClientRect();
+        return { width: Math.round(rect.width), height: Math.round(rect.height) };
+      });
       return {
         hasOverflow: docW > winW,
         docW,
         winW,
+        hasEmojiArrows,
+        vectorArrowCount: vectorArrows.length,
+        bridgeVectors,
         topOverflowing: overflowingElements.slice(0, 5),
       };
     });
@@ -119,10 +131,15 @@ try {
           });
         }
       });
+      const bodyText = document.body.textContent || "";
+      const hasEmojiArrows = /[\u2190-\u21FF]/u.test(bodyText);
+      const vectorArrows = document.querySelectorAll("[data-vector-arrow] svg path");
       return {
         hasOverflow: docW > winW,
         docW,
         winW,
+        hasEmojiArrows,
+        vectorArrowCount: vectorArrows.length,
         topOverflowing: overflowingElements.slice(0, 5),
       };
     });
@@ -140,6 +157,21 @@ try {
 
   await browser.close();
   console.log(JSON.stringify(results, null, 2));
+
+  const failed = results.some(
+    (r) =>
+      r.home.hasOverflow ||
+      r.projects.hasOverflow ||
+      r.home.hasEmojiArrows ||
+      r.projects.hasEmojiArrows ||
+      r.home.vectorArrowCount === 0 ||
+      r.projects.vectorArrowCount === 0 ||
+      r.home.bridgeVectors.length < 2 ||
+      r.home.bridgeVectors.some((b) => b.width <= 0 || b.height <= 0),
+  );
+  if (failed) {
+    process.exitCode = 1;
+  }
 } finally {
   if (process.platform === "win32") {
     spawn("taskkill", ["/pid", String(server.pid), "/T", "/F"]);

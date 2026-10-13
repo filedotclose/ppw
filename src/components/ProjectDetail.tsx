@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { Project } from "@/data/portfolio";
+import VectorArrow from "./VectorArrow";
 
 export default function ProjectDetail({
   project,
@@ -109,7 +110,7 @@ export default function ProjectDetail({
               }}
               data-cursor="NEXT"
             >
-              Next project <span aria-hidden="true">↗</span>
+              Next project <VectorArrow direction="up-right" />
             </button>
           </div>
         </>

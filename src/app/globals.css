@@ -107,6 +107,20 @@ section:focus {
 .skip-link:focus {
   top: 15px;
 }
+.vector-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.vector-arrow svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+  overflow: visible;
+}
 .text-action {
   font-size: 14px;
   display: inline-flex;
@@ -135,7 +149,7 @@ section:focus {
   transform-origin: left;
 }
 .text-action span {
-  font-size: 22px;
+  font-size: 20px;
   transition: transform 0.3s;
 }
 .text-action:hover span {
@@ -833,7 +847,7 @@ html[data-detail="open"] .optical-fallback {
   position: absolute;
   bottom: 12%;
   right: var(--gutter);
-  font-size: 8vw;
+  font-size: clamp(44px, 7.2vw, 108px);
   z-index: 4;
 }
 .scene-bridge--structure {
@@ -1351,9 +1365,13 @@ html[data-detail="open"] .optical-fallback {
   display: flex;
   gap: 30px;
 }
+.footer a {
+  display: inline-flex;
+  align-items: center;
+}
 .footer a > span {
-  font-size: 18px;
-  margin-left: 12px;
+  font-size: 13px;
+  margin-left: 5px;
 }
 html[data-scene="inside"] [data-optical-lens] {
   opacity: 0.45 !important;
@@ -1784,7 +1802,7 @@ html[data-scene="contact"] .optical-fallback {
     font-size: 15.5vw;
   }
   .bridge-direction {
-    font-size: 16vw;
+    font-size: clamp(36px, 11.5vw, 56px);
     bottom: 10%;
   }
   .signal-field,
@@ -2342,6 +2360,9 @@ html[data-detail="open"] .back-to-top {
 }
 
 @media (max-width: 767px) {
+  .contact-reveal {
+    padding-bottom: 76px;
+  }
   .back-to-top {
     bottom: 20px;
     right: 16px;
